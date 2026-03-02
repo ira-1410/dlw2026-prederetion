@@ -213,16 +213,9 @@ CNN_CLASSES = ['accident', 'normal'] #
 IMG_SIZE = None
 
 def _load_artifacts():
-    global _model, _scaler, _baseline, _cnn_model
+    global _model, _scaler, _baseline
     if _model is not None:
-        return   # already loaded
-
-    if not MODEL_PATH.exists():
-        raise FileNotFoundError(f"Model not found: {MODEL_PATH}")
-    if not SCALER_PATH.exists():
-        raise FileNotFoundError(f"Scaler not found: {SCALER_PATH}")
-    if not BASELINE_PATH.exists():
-        raise FileNotFoundError(f"Baseline not found: {BASELINE_PATH}")
+        return
 
     with open(SCALER_PATH, "rb") as f:
         _scaler = pickle.load(f)
@@ -233,18 +226,18 @@ def _load_artifacts():
     _model.load_state_dict(torch.load(MODEL_PATH, map_location=_device))
     _model.eval()
 
-    if _cnn_model is None:
-        _cnn_model = build_cnn_model(num_classes=2).to(_device)
-        with open(CNN_MODEL_PATH, 'rb') as f:
-            checkpoint = pickle.load(f)
-
-        _cnn_model.load_state_dict(checkpoint['model_state_dict'])
-        CNN_CLASSES = checkpoint['class_names']
-        IMG_SIZE    = checkpoint['img_size']
-        print(IMG_SIZE)
-        _cnn_model.eval()
-        print("✓ CNN Accident Classifier loaded")
-
+def _load_cnn():
+    global _cnn_model, CNN_CLASSES, IMG_SIZE
+    if _cnn_model is not None:
+        return
+    _cnn_model = build_cnn_model(num_classes=2).to(_device)
+    with open(CNN_MODEL_PATH, 'rb') as f:
+        checkpoint = pickle.load(f)
+    _cnn_model.load_state_dict(checkpoint['model_state_dict'])
+    CNN_CLASSES = checkpoint['class_names']
+    IMG_SIZE    = checkpoint['img_size']
+    _cnn_model.eval()
+    print("✓ CNN Accident Classifier loaded")
 
 # ── Core scoring function ─────────────────────────────────────────────────
 def score(feat_dict: dict) -> dict:
@@ -334,7 +327,7 @@ def score_batch(feat_dicts: list) -> list:
     return results
 
 def predict_accident(image_bytes: bytes) -> dict:
-    _load_artifacts()
+    _load_cnn()
 
     img    = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     tensor = cnn_transforms(img).unsqueeze(0).to(_device)
