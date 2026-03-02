@@ -9,7 +9,7 @@ def download_models():
         "accident_classifier_checkpoint.pkl": "1jc3iPMAJveEG4pjX1TzFHcVlrXdTl9cQ",
         "baseline_tracker.pkl":               "1hyzT-qNRlpuPaGXKH5_20UqvwuR9yyEO",
         "scaler.pkl":                         "1dVuyk10AGasdM3SR1ICAaZfQ2qhcg1Zj",
-        "autoencoder.pt":                     "1lfU1VmUiuwPnuNLIqgKrGbybfVajjl1b",
+        "lstm_autoencoder.pt":                     "1lfU1VmUiuwPnuNLIqgKrGbybfVajjl1b",
     }
 
     for filename, file_id in files.items():
