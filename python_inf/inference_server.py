@@ -16,6 +16,7 @@ Node.js calls:
 
 from flask import Flask, request, jsonify
 from infer import score, score_batch, _load_artifacts, predict_accident
+import os
 
 app = Flask(__name__)
 
@@ -67,5 +68,5 @@ def score_image():
     
 
 if __name__ == "__main__":
-    # threaded=False — PyTorch is not thread-safe with shared model state
-    app.run(host="0.0.0.0", port=5001, threaded=False)
+       port = int(os.environ.get("PORT", 5001))
+       app.run(host="0.0.0.0", port=port, threaded=False)
