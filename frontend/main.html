@@ -1,0 +1,175 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Singapore Route Planner</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+
+    #controls {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      width: 420px;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 6px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .results {
+      position: absolute;
+      top: 36px;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ccc;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    .result-item {
+      padding: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .result-item:hover {
+      background: #f0f0f0;
+    }
+
+    button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+    #legend {
+        position: absolute;
+        top: 28px;
+        right: 28px;
+        z-index: 1000;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.0.5);
+        font-size: 15px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 6px 0;
+    }
+
+    .legend-dot {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="controls">
+    <div class="search-box">
+      <input id="start" placeholder="Start address" autocomplete="off" />
+      <div id="start-results" class="results"></div>
+    </div>
+
+    <div class="search-box">
+      <input id="end" placeholder="End address" autocomplete="off" />
+      <div id="end-results" class="results"></div>
+    </div>
+
+    <button id="route-button">Route</button>
+  </div>
+  <div id="alert"></div>
+  <div id="map"></div>
+
+  <div id="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:#43a047"></span> Normal</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#fb8c00"></span> Medium Risk</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#e53935"></span> High Risk</div>
+    </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script type="module" src="app.js"></script>
+  <script src="road_ids.js"></script>
+</body>
+</html>
+
+<style>
+#risk-alert {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #b91c1c;
+  color: white;
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  z-index: 9999;
+  animation: slide-in 0.3s ease-out;
+}
+
+
+#risk-alert strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.risk-reasons div {
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+</style>
