@@ -13,7 +13,7 @@ app.use(express.json());
 
 const PORT          = 3000;
 const BASE_URL      = "https://datamall2.mytransport.sg/ltaodataservice";
-const INFERENCE_URL = "http://localhost:5001";
+const INFERENCE_URL = process.env.INFERENCE_URL || "http://localhost:5001";
 
 const prevSpeedBandByLink = new Map();
 
