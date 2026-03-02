@@ -20,6 +20,9 @@ import os
 
 app = Flask(__name__)
 
+from download_models import download_models
+download_models()  # runs before _load_artifacts()
+
 # Load model/scaler/baseline into memory at startup — not on first request
 print("Loading model artifacts...")
 _load_artifacts()
