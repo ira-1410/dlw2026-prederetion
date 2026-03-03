@@ -7,6 +7,7 @@ L.tileLayer(
   { attribution: "© OpenStreetMap © CARTO" }
 ).addTo(map);
 
+const API_BASE = "https://dlw2026-prederetion-node-server-production.up.railway.app";
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
@@ -80,7 +81,7 @@ async function loadGeometry() {
   document.getElementById("route-button").disabled    = true;
   document.getElementById("route-button").textContent = "Loading map data...";
 
-  const res  = await fetch("http://localhost:3000/segments/geometry");
+  const res = await fetch(`${API_BASE}/segments/geometry`);
   const data = await res.json();
   ltaSegments = data.geometry;
 
@@ -220,7 +221,7 @@ async function drawRoute() {
   // 3. Score matched segments AND fetch cameras in parallel
   try {
     const [scoreRes, cameras] = await Promise.all([
-      fetch("http://localhost:3000/predict/route", {
+      fetch(`${API_BASE}/predict/route`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ linkIds: uniqueLinkIds })
@@ -326,7 +327,7 @@ async function fetchRouteCameras(coords, maxCameras = 6) {
   const maxLon = Math.max(...lons) + pad;
 
   const res  = await fetch(
-    `http://localhost:3000/lta/traffic-images?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`
+    `${API_BASE}/lta/traffic-images?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`
   );
   const data = await res.json();
   if (!data.cameras?.length) return [];
@@ -366,7 +367,7 @@ async function fetchRouteCameras(coords, maxCameras = 6) {
 
 async function scoreImage(imageUrl) {
   try {
-    const res = await fetch("http://localhost:3000/predict/image", {
+    const res = await fetch(`${API_BASE}/predict/image`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({ imageUrl }),
